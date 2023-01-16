@@ -7,7 +7,7 @@ const { Product, Category, Tag, ProductTag } = require("../../models");
 router.get("/", async (req, res) => {
   // find all products
   try {
-    const products = await Products.findAll({
+    const products = await Product.findAll({
       // be sure to include its associated Category and Tag data
       include: [{ model: Category }, { model: Tag }],
     });
@@ -39,14 +39,13 @@ router.get("/:id", async (req, res) => {
     res.status(500).json(err);
   }
 });
-
 // create new product
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   /* req.body should look like this...
-    {
+   {
       product_name: "Basketball",
       price: 200.00,
-      stock: 3,
+      stock: 3, 
       tagIds: [1, 2, 3, 4]
     }
   */
@@ -76,9 +75,7 @@ router.post("/", (req, res) => {
 router.put("/:id", (req, res) => {
   // update product data
   Product.update(req.body, {
-    where: {
-      id: req.params.id,
-    },
+    where: { id: req.params.id },
   })
     .then((product) => {
       // find all associated tags from ProductTag
